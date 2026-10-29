@@ -3,7 +3,8 @@
 #   2. convierte "Sin publicar" del CHANGELOG en la sección de esa versión
 #   3. compila el APK firmado -> release/Camstyling-vX.Y.Z.apk
 #   4. commit, etiqueta vX.Y.Z, push y Release de GitHub con el APK y las notas
-# Subir el APK a Google Drive lo hace Claude con su conector, después de esto.
+# Después, Claude agrega el enlace de la versión al documento "Camstyling -
+# Descargas" de Google Drive (ver README, "Comandos").
 #
 # Uso:  .\scripts\publicar.ps1 parche      (0.1.0 -> 0.1.1)
 #       .\scripts\publicar.ps1 menor       (0.1.3 -> 0.2.0)

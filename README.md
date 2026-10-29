@@ -46,8 +46,11 @@ apuntando a ellos.
 | `.\gradlew.bat assembleRelease` | APK firmado en `app/build/outputs/apk/release/app-release.apk` |
 | `.\scripts\publicar.ps1 parche` | Versión nueva (parche, menor o mayor): sube el número, cierra el CHANGELOG, compila, hace commit y etiqueta, sube a GitHub y crea la Release con el APK |
 
-Cada versión publicada también se sube a Google Drive (lo hace Claude
-después de `publicar.ps1`).
+Después de `publicar.ps1`, Claude agrega el enlace de la versión (Release
+y APK directo) arriba del documento "Camstyling - Descargas", en la
+carpeta Camstyling de Google Drive (documento con id
+`1SRdBVo-0BhgXBtEnPy0tqxOhTIqz6cBb-HVZQsebYO8`). El APK no se sube a
+Drive: vive en la Release de GitHub.
 
 ## Firma
 
