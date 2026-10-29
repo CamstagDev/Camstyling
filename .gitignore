@@ -1,0 +1,24 @@
+# Builds
+build/
+.gradle/
+.kotlin/
+local.properties
+release/
+
+# Llave de firma (solo en esta PC; ver README, "Firma")
+*.keystore
+*.jks
+keystore.properties
+
+# Logs y entorno
+*.log
+.env
+.env.*
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.iml
+.claude/worktrees/
