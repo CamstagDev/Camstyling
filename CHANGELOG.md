@@ -6,6 +6,8 @@ la versión nueva.
 
 ## Sin publicar
 
+## 0.1.0 (2026-10-29)
+
 - Primera versión: la base de la app. Pantalla de inicio con los módulos
   y el módulo Tonos con sus dos permisos ("Cambiar tonos del sistema" y
   "Acceso a notificaciones"), cada uno con un botón que abre su pantalla
