@@ -1,4 +1,4 @@
-# Publica una versión nueva de Camstyling:
+﻿# Publica una versión nueva de Camstyling:
 #   1. sube el número (parche, menor o mayor) en gradle.properties, o usa -Version
 #   2. convierte "Sin publicar" del CHANGELOG en la sección de esa versión
 #   3. compila el APK firmado -> release/Camstyling-vX.Y.Z.apk
@@ -56,10 +56,14 @@ $apk = "$raiz\release\Camstyling-v$Version.apk"
 Copy-Item "$raiz\app\build\outputs\apk\release\app-release.apk" $apk -Force
 
 # 4. Git y Release de GitHub. Notas: la entrada del DEVLOG (si hay) y la del CHANGELOG.
+# git escribe su avance en stderr; con 'Stop', PowerShell 5.1 lo tomaría como error.
+$ErrorActionPreference = 'Continue'
 git add gradle.properties CHANGELOG.md
-git commit -m "Versión $Version"
-git tag "v$Version"
-git push --follow-tags origin HEAD
+git commit -q -m "Versión $Version"
+git tag -a "v$Version" -m "Versión $Version"
+git push -q origin HEAD "v$Version" 2>&1 | Out-Null
+if ($LASTEXITCODE -ne 0) { throw 'Falló git push.' }
+$ErrorActionPreference = 'Stop'
 
 $devlog = [IO.File]::ReadAllText("$raiz\DEVLOG.md", $utf8)
 $nota = [regex]::Match($devlog, "(?s)## $([regex]::Escape($Version)) [^\n]*\n(.*?)(?=\r?\n## |\z)").Groups[1].Value.Trim()
