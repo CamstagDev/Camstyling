@@ -13,6 +13,7 @@ import com.camstagdev.camstyling.tonos.PantallaTonos
 import com.camstagdev.camstyling.ui.Modulo
 import com.camstagdev.camstyling.ui.PantallaInicio
 import com.camstagdev.camstyling.ui.TemaCamstyling
+import com.camstagdev.camstyling.vibracion.PantallaVibracion
 
 class MainActivity : ComponentActivity() {
 
@@ -30,6 +31,10 @@ class MainActivity : ComponentActivity() {
                     Modulo.TONOS -> {
                         BackHandler { abierto = null }
                         PantallaTonos(vecesAlFrente = vecesAlFrente, alVolver = { abierto = null })
+                    }
+                    Modulo.VIBRACION -> {
+                        BackHandler { abierto = null }
+                        PantallaVibracion(vecesAlFrente = vecesAlFrente, alVolver = { abierto = null })
                     }
                 }
             }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MusicNote
+import androidx.compose.material.icons.outlined.Vibration
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +34,11 @@ enum class Modulo(val titulo: String, val descripcion: String, val icono: ImageV
         "Tonos",
         "Tono de llamada, notificaciones y alarma; sonidos por app, por contacto y por persona.",
         Icons.Outlined.MusicNote,
+    ),
+    VIBRACION(
+        "Vibración",
+        "Patrones de vibración para llamadas y para cada app: los de siempre, los tuyos o al ritmo de un sonido.",
+        Icons.Outlined.Vibration,
     ),
 }
 

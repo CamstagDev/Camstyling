@@ -21,17 +21,33 @@ Android 10 o más nuevo. Pensada para teléfonos Motorola (Android casi puro).
   Así no depende de que la otra app respete nada al actualizarse.
 - **Tonos por contacto**: un tono de llamada para cada contacto.
 
+### Vibración
+
+- **Patrones**: los de los teléfonos de antes (doble toque, latido, timbre
+  clásico, SOS...) y los tuyos, con pulsos, duración, pausa, fuerza y
+  repeticiones. Muchos teléfonos solo prenden y apagan el motor: ahí la
+  fuerza no cambia nada, pero los tiempos sí (la app lo avisa).
+- **Al ritmo de un sonido**: escucha un archivo de audio y arma una
+  vibración que lo sigue, más fuerte donde suena más fuerte.
+- **Por app**: cada app vibra con su patrón (la vibración original de esa
+  app se apaga una vez en sus ajustes de notificación).
+- **Llamadas**: vibra con su patrón mientras suena. El tono lo sigue
+  tocando el sistema; para que no se mezclen, se apaga "Vibrar en
+  llamadas" en Ajustes de sonido.
+
 Estado de cada uno: ver CHANGELOG.md.
 
 ## Permisos
 
-Ninguno se pide con un diálogo: la app abre la pantalla de Ajustes donde
-se activa cada uno.
+Solo "Teléfono" se pide con un diálogo; para los demás la app abre la
+pantalla de Ajustes donde se activa cada uno. Vibrar no necesita permiso
+que preguntar.
 
 | Permiso | Para qué |
 |---|---|
 | Modificar ajustes del sistema | Cambiar el tono de llamada, de notificación y de alarma |
-| Acceso a notificaciones | Ver qué notificación llegó y tocar el sonido de su regla |
+| Acceso a notificaciones | Ver qué notificación llegó y tocar el sonido o la vibración de su regla |
+| Teléfono | Saber cuándo suena una llamada para vibrar con su patrón (no lee números) |
 | Contactos (más adelante) | Ponerle un tono a cada contacto |
 
 ## Comandos
@@ -70,7 +86,8 @@ app/src/main/java/com/camstagdev/camstyling/
   MainActivity.kt   arranque y navegación entre módulos
   ui/               tema y pantalla de inicio (lista de módulos)
   tonos/            módulo de tonos
-  avisos/           el servicio que escucha las notificaciones
+  vibracion/        módulo de vibración: patrones, editor y "al ritmo de un sonido"
+  avisos/           lo que despierta el sistema: notificaciones y llamadas entrantes
   sistema/          permisos y pantallas de Ajustes
 scripts/            publicar.ps1
 ```

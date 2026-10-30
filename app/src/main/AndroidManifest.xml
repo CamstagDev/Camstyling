@@ -11,6 +11,20 @@
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- Vibrar con los patrones propios. Android lo da solo, sin preguntar. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Saber cuándo suena una llamada, para vibrar con su patrón (se pide con un diálogo). -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!-- Ver las apps con ícono, para elegir a cuál ponerle vibración. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -38,5 +52,14 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+
+        <!-- Vibra con el patrón de llamadas mientras suena el teléfono. -->
+        <receiver
+            android:name=".avisos.LlamadaEntrante"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
