@@ -13,7 +13,7 @@ import com.camstagdev.camstyling.avisos.EscuchaNotificaciones
 /**
  * Los permisos de Camstyling. Los especiales no se pueden pedir con un diálogo:
  * el usuario los activa en una pantalla de Ajustes que la app le abre. El de
- * "Teléfono" sí es un diálogo (lo pide la pantalla Vibración).
+ * "Teléfono" (pantalla Vibración) y "Contactos" (pantalla Tonos) sí son diálogos.
  */
 object Permisos {
 
@@ -50,6 +50,13 @@ object Permisos {
     fun puedeVerLlamadas(contexto: Context): Boolean =
         ContextCompat.checkSelfPermission(contexto, VER_LLAMADAS) == PackageManager.PERMISSION_GRANTED
 
+    /** "Contactos": leer y cambiar el tono de cada contacto. Es un solo diálogo para los dos. */
+    val CONTACTOS = arrayOf(android.Manifest.permission.READ_CONTACTS, android.Manifest.permission.WRITE_CONTACTS)
+
+    fun puedeUsarContactos(contexto: Context): Boolean = CONTACTOS.all {
+        ContextCompat.checkSelfPermission(contexto, it) == PackageManager.PERMISSION_GRANTED
+    }
+
     /** Si el usuario lo negó dos veces, Android ya no muestra el diálogo: queda la pantalla de la app en Ajustes. */
     fun abrirAjustesDeLaApp(contexto: Context) {
         contexto.startActivity(
@@ -70,5 +77,21 @@ object Permisos {
                 .putExtra(Settings.EXTRA_APP_PACKAGE, paquete)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         )
+    }
+
+    /**
+     * Una categoría de notificaciones de otra app, para quitarle su sonido
+     * original. Si el teléfono no abre la categoría, abre las notificaciones de la app.
+     */
+    fun abrirCanalDeApp(contexto: Context, paquete: String, canal: String) {
+        val intento = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+            .putExtra(Settings.EXTRA_APP_PACKAGE, paquete)
+            .putExtra(Settings.EXTRA_CHANNEL_ID, canal)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        try {
+            contexto.startActivity(intento)
+        } catch (_: android.content.ActivityNotFoundException) {
+            abrirNotificacionesDeApp(contexto, paquete)
+        }
     }
 }

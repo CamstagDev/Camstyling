@@ -19,11 +19,18 @@ la versión nueva.
   - Vibración de llamadas: mientras suena el teléfono vibra con su patrón y
     para al contestar o colgar. Pide el permiso "Teléfono".
   - Avisa si el motor del teléfono no cambia la fuerza (solo prende y apaga).
-- Tonos: **sonidos por app**. Cada app puede sonar con su propio sonido
-  (de la lista del teléfono o de un archivo). El servicio de notificaciones
-  lo toca con el volumen de notificaciones; en modo vibración solo vibra y
-  respeta "No molestar" y canales silenciosos. El sonido original se apaga
-  una vez en los ajustes de esa app (la tarjeta abre esa pantalla).
+- Tonos: **sonidos por app**. Reglas con su propio sonido (de la lista del
+  teléfono o de un archivo) para toda una app, una categoría (mensajes,
+  grupos...), una persona o grupo, o los mensajes con una palabra. Si
+  coinciden varias, gana la más precisa. El servicio de notificaciones lo
+  toca con el volumen de notificaciones (corta a los 10 s); en modo
+  vibración solo vibra y respeta "No molestar" y canales silenciosos. Las
+  categorías y los chats se ofrecen a medida que llegan notificaciones. El
+  sonido original se apaga una vez en los ajustes de esa app o categoría
+  (la tarjeta abre esa pantalla) y avisa si sigue prendido.
+- Tonos: **tonos por contacto**. Un tono de llamada para cada contacto,
+  guardado en el mismo contacto (lo toca la app de Teléfono). Pide el
+  permiso "Contactos".
 - Tonos: ya se pueden cambiar los tonos del sistema (llamada, notificación
   y alarma), desde la lista del teléfono o desde cualquier archivo de audio,
   que se copia a la carpeta de tonos.

@@ -15,8 +15,8 @@ Android 10 o más nuevo. Pensada para teléfonos Motorola (Android casi puro).
   archivo de audio. Los sonidos se copian a las carpetas de tonos del
   teléfono, así siguen sonando aunque borres el archivo original.
 - **Sonidos por app**: WhatsApp, Telegram, Mensajes, Discord o cualquier
-  otra, cada una con su sonido (por categoría, persona, grupo o palabra,
-  próximamente). Camstyling escucha las notificaciones y toca tu sonido; el sonido original de esa
+  otra, por toda la app, categoría, persona, grupo o palabra. Camstyling
+  escucha las notificaciones y toca tu sonido; el sonido original de esa
   categoría se silencia una vez en Ajustes (la app abre esa pantalla).
   Así no depende de que la otra app respete nada al actualizarse.
 - **Tonos por contacto**: un tono de llamada para cada contacto.
@@ -49,7 +49,7 @@ Estado de cada uno: ver CHANGELOG.md.
 
 ## Permisos
 
-Solo "Teléfono" se pide con un diálogo; para los demás la app abre la
+"Teléfono" y "Contactos" se piden con un diálogo; para los demás la app abre la
 pantalla de Ajustes donde se activa cada uno. Vibrar y poner el fondo
 no necesitan permiso que preguntar, y Fondos tampoco pide permiso de
 archivos: solo lee la carpeta que el usuario elige.
@@ -59,7 +59,7 @@ archivos: solo lee la carpeta que el usuario elige.
 | Modificar ajustes del sistema | Cambiar el tono de llamada, de notificación y de alarma |
 | Acceso a notificaciones | Ver qué notificación llegó y tocar el sonido o la vibración de su regla |
 | Teléfono | Saber cuándo suena una llamada para vibrar con su patrón (no lee números) |
-| Contactos (más adelante) | Ponerle un tono a cada contacto |
+| Contactos | Ponerle un tono de llamada a cada contacto |
 
 ## Comandos
 
