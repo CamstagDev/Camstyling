@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.camstagdev.camstyling.ui.Explicacion
+import com.camstagdev.camstyling.ui.Modulo
 import com.camstagdev.camstyling.ui.Tarjeta
 import com.camstagdev.camstyling.ui.Titulo
 import kotlinx.coroutines.Dispatchers
@@ -137,6 +138,7 @@ fun PantallaFondos(alVolver: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.padding(margen),
         ) {
+            item { Explicacion(Modulo.FONDOS.descripcion) }
             item {
                 Tarjeta {
                     Text("Dónde se pone", style = MaterialTheme.typography.titleMedium)
