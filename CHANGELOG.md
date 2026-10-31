@@ -59,6 +59,26 @@ la versión nueva.
   - Sin gastar batería: una alarma inexacta por cada horario, que se
     vuelve a armar al prender el teléfono. Pide "Acceso a No molestar".
 
+- Módulo nuevo **Avisos**:
+  - Historial de notificaciones (apagado de entrada): guarda título y
+    texto aunque las descartes o la app las borre (mensajes eliminados de
+    WhatsApp). Se busca y se borra solo después de 1, 3, 7 o 30 días.
+    Queda solo en el teléfono.
+  - Recordatorio: lo elegido (apps, personas, grupos o palabras) vuelve a
+    sonar y vibrar cada 5 a 30 minutos mientras siga sin abrir, hasta un
+    máximo de veces.
+  - Linterna: tres destellos cuando llega algo elegido, si quieres solo con
+    la pantalla apagada. No pide permiso de cámara.
+
+- Módulo nuevo **Adicionales** (cada cosa apagada de entrada):
+  - Animación al cargar: con el teléfono bloqueado, al conectar el
+    cargador sale una batería animada con el porcentaje por 5 segundos
+    ("Desconectado" al sacarlo). Nunca tapa lo que estás usando.
+  - Colores, íconos y letra: qué se puede cambiar sin root y atajos a esos
+    ajustes del teléfono.
+- **Respaldo** en la pantalla de inicio: guarda todos los ajustes en un
+  archivo y los restaura.
+
 ## 0.1.0 (2026-10-29)
 
 - Primera versión: la base de la app. Pantalla de inicio con los módulos

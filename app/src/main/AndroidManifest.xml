@@ -26,6 +26,10 @@
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- Adicionales: la animación de carga se abre con una notificación de pantalla completa sin sonido. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
     <!-- Poner el fondo de pantalla. Android lo da solo, sin preguntar. -->
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
@@ -85,5 +89,20 @@
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
+
+        <!-- Vuelve a avisar de una notificación elegida que sigue sin abrir (solo la app lo programa). -->
+        <receiver
+            android:name=".avisos.Recordatorio"
+            android:exported="false" />
+
+        <!-- La animación de carga: sale sobre la pantalla de bloqueo y se cierra sola. -->
+        <activity
+            android:name=".adicionales.PantallaCarga"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:showWhenLocked="true"
+            android:taskAffinity=""
+            android:turnScreenOn="true" />
     </application>
 </manifest>
