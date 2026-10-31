@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MusicNote
+import androidx.compose.material.icons.outlined.Wallpaper
 import androidx.compose.material.icons.outlined.Vibration
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,6 +40,11 @@ enum class Modulo(val titulo: String, val descripcion: String, val icono: ImageV
         "Vibración",
         "Patrones de vibración para llamadas y para cada app: los de siempre, los tuyos o al ritmo de un sonido.",
         Icons.Outlined.Vibration,
+    ),
+    FONDOS(
+        "Fondos",
+        "Fondo de inicio y de bloqueo: una imagen, o que cambie solo con las fotos de una carpeta, con otra de noche.",
+        Icons.Outlined.Wallpaper,
     ),
 }
 

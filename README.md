@@ -35,13 +35,24 @@ Android 10 o más nuevo. Pensada para teléfonos Motorola (Android casi puro).
   tocando el sistema; para que no se mezclen, se apaga "Vibrar en
   llamadas" en Ajustes de sonido.
 
+### Fondos
+
+- **Una imagen**: de fondo en inicio, en bloqueo o en las dos.
+- **Cambio automático**: elige una carpeta y el fondo cambia solo con sus
+  imágenes, al azar o en orden, cada hora, cada varias horas o cada día.
+- **De noche**: otra carpeta (o una sola imagen) entre las horas que
+  elijas.
+- Sin servicio prendido ni alarmas exactas: Android despierta a la app
+  cuando toca, así que el cambio puede atrasarse un rato.
+
 Estado de cada uno: ver CHANGELOG.md.
 
 ## Permisos
 
 Solo "Teléfono" se pide con un diálogo; para los demás la app abre la
-pantalla de Ajustes donde se activa cada uno. Vibrar no necesita permiso
-que preguntar.
+pantalla de Ajustes donde se activa cada uno. Vibrar y poner el fondo
+no necesitan permiso que preguntar, y Fondos tampoco pide permiso de
+archivos: solo lee la carpeta que el usuario elige.
 
 | Permiso | Para qué |
 |---|---|
