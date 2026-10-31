@@ -136,8 +136,8 @@ fun DialogoFuente(titulo: String, alDelTelefono: () -> Unit, alDeArchivo: () -> 
         title = { Text(titulo) },
         text = {
             Column {
-                Fila("De la lista del teléfono", alDelTelefono)
-                Fila("Desde un archivo de audio", alDeArchivo)
+                Fila("De la lista del teléfono", alTocar = alDelTelefono)
+                Fila("Desde un archivo de audio", alTocar = alDeArchivo)
             }
         },
         confirmButton = {},
