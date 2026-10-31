@@ -14,9 +14,9 @@ Android 10 o más nuevo. Pensada para teléfonos Motorola (Android casi puro).
 - **Tonos del sistema**: llamada, notificación y alarma con cualquier
   archivo de audio. Los sonidos se copian a las carpetas de tonos del
   teléfono, así siguen sonando aunque borres el archivo original.
-- **Sonidos por app**: WhatsApp, Telegram, Mensajes y Discord (y
-  cualquier otra), por categoría, persona, grupo o palabra. Camstyling
-  escucha las notificaciones y toca tu sonido; el sonido original de esa
+- **Sonidos por app**: WhatsApp, Telegram, Mensajes, Discord o cualquier
+  otra, cada una con su sonido (por categoría, persona, grupo o palabra,
+  próximamente). Camstyling escucha las notificaciones y toca tu sonido; el sonido original de esa
   categoría se silencia una vez en Ajustes (la app abre esa pantalla).
   Así no depende de que la otra app respete nada al actualizarse.
 - **Tonos por contacto**: un tono de llamada para cada contacto.

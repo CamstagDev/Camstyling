@@ -6,6 +6,8 @@ import android.content.ComponentName
 import android.media.AudioManager
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import com.camstagdev.camstyling.tonos.Reproductor
+import com.camstagdev.camstyling.tonos.SonidosPorApp
 import com.camstagdev.camstyling.vibracion.Reglas
 import com.camstagdev.camstyling.vibracion.Vibrador
 
@@ -13,8 +15,9 @@ import com.camstagdev.camstyling.vibracion.Vibrador
  * El sistema la despierta solo cuando llega una notificación; no corre en
  * segundo plano el resto del tiempo, así que no gasta batería.
  *
- * Por ahora pone la vibración de cada app (módulo Vibración). Las reglas de
- * sonido (por categoría, persona y palabra) llegan en las siguientes versiones.
+ * Toca el sonido de cada app (módulo Tonos) y la hace vibrar con su patrón
+ * (módulo Vibración). Las reglas por categoría, persona y palabra llegan en las
+ * siguientes versiones.
  */
 class EscuchaNotificaciones : NotificationListenerService() {
 
@@ -26,7 +29,9 @@ class EscuchaNotificaciones : NotificationListenerService() {
 
     override fun onNotificationPosted(aviso: StatusBarNotification, clasificacion: RankingMap?) {
         if (aviso.packageName == packageName) return
-        val patron = Reglas(this).patronDeApp(aviso.packageName) ?: return
+        val sonido = SonidosPorApp(this).sonidoDeApp(aviso.packageName)
+        val patron = Reglas(this).patronDeApp(aviso.packageName)
+        if (sonido == null && patron == null) return
         val notificacion = aviso.notification
 
         // Lo que no avisa: lo fijo (música, descargas), los resúmenes de grupo y las actualizaciones silenciosas.
@@ -40,13 +45,16 @@ class EscuchaNotificaciones : NotificationListenerService() {
             if (!ranking.matchesInterruptionFilter()) return
             if (ranking.importance < NotificationManager.IMPORTANCE_DEFAULT) return
         }
-        if (getSystemService(AudioManager::class.java).ringerMode == AudioManager.RINGER_MODE_SILENT) return
+        val modo = getSystemService(AudioManager::class.java).ringerMode
+        if (modo == AudioManager.RINGER_MODE_SILENT) return
 
         val ahora = System.currentTimeMillis()
         if (ahora - (ultimaVez[aviso.packageName] ?: 0L) < SEPARACION_MS) return
         ultimaVez[aviso.packageName] = ahora
 
-        Vibrador.vibrar(this, patron, Vibrador.Uso.NOTIFICACION)
+        // En modo vibración no suena, pero sí vibra.
+        if (sonido != null && modo == AudioManager.RINGER_MODE_NORMAL) Reproductor.tocar(this, sonido)
+        if (patron != null) Vibrador.vibrar(this, patron, Vibrador.Uso.NOTIFICACION)
     }
 
     override fun onNotificationRemoved(aviso: StatusBarNotification) {

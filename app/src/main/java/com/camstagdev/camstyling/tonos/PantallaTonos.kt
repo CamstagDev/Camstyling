@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -23,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,9 +39,11 @@ import androidx.compose.ui.unit.dp
 import com.camstagdev.camstyling.sistema.Permisos
 import com.camstagdev.camstyling.ui.Explicacion
 import com.camstagdev.camstyling.ui.Pendiente
+import com.camstagdev.camstyling.ui.SelectorDeApp
 import com.camstagdev.camstyling.ui.Tarjeta
 import com.camstagdev.camstyling.ui.TarjetaPermiso
 import com.camstagdev.camstyling.ui.Titulo
+import com.camstagdev.camstyling.ui.nombreDeApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -59,6 +63,60 @@ fun PantallaTonos(vecesAlFrente: Int, alVolver: () -> Unit) {
     }
     // Qué tono se está cambiando mientras está abierta la lista del sistema o el selector de archivos.
     var cambiando by remember { mutableStateOf<TipoDeTono?>(null) }
+
+    val sonidos = remember { SonidosPorApp(contexto) }
+    val apps = remember(cambios) {
+        sonidos.apps().map { (paquete, sonido) -> Triple(paquete, nombreDeApp(contexto, paquete), TonosDelSistema.nombre(contexto, sonido)) }
+            .sortedBy { it.second.lowercase() }
+    }
+    var agregandoApp by remember { mutableStateOf(false) }
+    // A qué app se le está eligiendo sonido mientras está abierta la lista del sistema o el selector de archivos.
+    var paraApp by remember { mutableStateOf<String?>(null) }
+
+    val sonidoDelTelefono = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
+        val paquete = paraApp ?: return@rememberLauncherForActivityResult
+        val elegido = resultado.data?.let { datos ->
+            if (Build.VERSION.SDK_INT >= 33) {
+                datos.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, Uri::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                datos.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+            }
+        }
+        if (resultado.resultCode == android.app.Activity.RESULT_OK && elegido != null) {
+            sonidos.ponerApp(paquete, elegido)
+            cambios++
+        }
+    }
+
+    val archivoParaApp = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { origen: Uri? ->
+        val paquete = paraApp
+        if (origen == null || paquete == null) return@rememberLauncherForActivityResult
+        alcance.launch {
+            val resultado = withContext(Dispatchers.IO) {
+                runCatching { TonosDelSistema.copiar(contexto, origen, TipoDeTono.NOTIFICACION) }
+            }
+            resultado.getOrNull()?.let { sonidos.ponerApp(paquete, it) }
+            cambios++
+            Toast.makeText(
+                contexto,
+                if (resultado.isSuccess) "Sonido de ${nombreDeApp(contexto, paquete)} cambiado" else "No se pudo usar ese archivo",
+                Toast.LENGTH_SHORT,
+            ).show()
+        }
+    }
+
+    fun elegirSonidoDelTelefono(paquete: String) {
+        paraApp = paquete
+        sonidoDelTelefono.launch(
+            Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+                .putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION)
+                .putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, sonidos.sonidoDeApp(paquete))
+                .putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
+                .putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, false)
+                .putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Sonido de ${nombreDeApp(contexto, paquete)}"),
+        )
+    }
 
     val listaDelSistema = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
         val tipo = cambiando ?: return@rememberLauncherForActivityResult
@@ -165,9 +223,56 @@ fun PantallaTonos(vecesAlFrente: Int, alVolver: () -> Unit) {
                 )
             }
 
+            item { Titulo("Sonidos por app") }
+            if (!notificaciones) {
+                item {
+                    TarjetaPermiso(
+                        titulo = "Acceso a notificaciones",
+                        explicacion = "Para sonar con el sonido de cada app cuando te llega algo.",
+                        concedido = false,
+                        alConceder = { Permisos.abrirLeerNotificaciones(contexto) },
+                    )
+                }
+            }
+            items(apps, key = { it.first }) { (paquete, nombre, sonido) ->
+                Tarjeta {
+                    Text(nombre, style = MaterialTheme.typography.titleMedium)
+                    Text(sonido, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.primary)
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        FilledTonalButton(onClick = { elegirSonidoDelTelefono(paquete) }) { Text("Del teléfono") }
+                        OutlinedButton(onClick = { paraApp = paquete; archivoParaApp.launch(arrayOf("audio/*")) }) { Text("Archivo") }
+                        OutlinedButton(onClick = { sonidos.ponerApp(paquete, null); cambios++ }) { Text("Quitar") }
+                    }
+                    TextButton(onClick = { Permisos.abrirNotificacionesDeApp(contexto, paquete) }) {
+                        Text("Apagar su sonido original")
+                    }
+                }
+            }
+            item {
+                Explicacion(
+                    "Elige la app y su sonido. Después, en los ajustes de notificación de esa app (botón de cada " +
+                        "tarjeta), pon su sonido en \"Ninguno\" para que solo suene el tuyo. No la marques como " +
+                        "\"Silenciosa\": así Camstyling tampoco suena. En modo vibración solo vibra.",
+                )
+            }
+            item {
+                FilledTonalButton(onClick = { agregandoApp = true }) {
+                    Icon(Icons.Outlined.Add, contentDescription = null)
+                    Text("  Agregar app")
+                }
+            }
+
             item { Titulo("Próximamente") }
-            item { Pendiente("Sonidos por app", "WhatsApp, Telegram, Mensajes y Discord, por categoría, persona, grupo o palabra.") }
+            item { Pendiente("Sonidos por categoría, persona o palabra", "Un sonido para un chat, un grupo o los mensajes que digan algo.") }
             item { Pendiente("Tonos por contacto", "Un tono de llamada distinto para cada contacto.") }
         }
+    }
+
+    if (agregandoApp) {
+        SelectorDeApp(
+            yaTienen = apps.map { it.first }.toSet(),
+            alElegir = { paquete -> agregandoApp = false; elegirSonidoDelTelefono(paquete) },
+            alCerrar = { agregandoApp = false },
+        )
     }
 }

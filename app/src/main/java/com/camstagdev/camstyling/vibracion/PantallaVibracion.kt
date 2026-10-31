@@ -3,20 +3,14 @@
 package com.camstagdev.camstyling.vibracion
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,7 +22,6 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.GraphicEq
 import androidx.compose.material.icons.outlined.Vibration
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
@@ -36,13 +29,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -57,9 +48,11 @@ import androidx.core.app.ActivityCompat
 import com.camstagdev.camstyling.sistema.Permisos
 import com.camstagdev.camstyling.tonos.TonosDelSistema
 import com.camstagdev.camstyling.ui.Explicacion
+import com.camstagdev.camstyling.ui.SelectorDeApp
 import com.camstagdev.camstyling.ui.Tarjeta
 import com.camstagdev.camstyling.ui.TarjetaPermiso
 import com.camstagdev.camstyling.ui.Titulo
+import com.camstagdev.camstyling.ui.nombreDeApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -322,60 +315,4 @@ fun PantallaVibracion(vecesAlFrente: Int, alVolver: () -> Unit) {
             alCerrar = { agregandoApp = false },
         )
     }
-}
-
-/** Lista de las apps instaladas (las que tienen ícono), con buscador. */
-@Composable
-private fun SelectorDeApp(yaTienen: Set<String>, alElegir: (String) -> Unit, alCerrar: () -> Unit) {
-    val contexto = LocalContext.current
-    var lista by remember { mutableStateOf<List<Pair<String, String>>?>(null) }
-    var busqueda by remember { mutableStateOf("") }
-    LaunchedEffect(Unit) { lista = withContext(Dispatchers.Default) { appsInstaladas(contexto) } }
-
-    AlertDialog(
-        onDismissRequest = alCerrar,
-        title = { Text("Elige la app") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(busqueda, { busqueda = it }, label = { Text("Buscar") }, singleLine = true, modifier = Modifier.fillMaxWidth())
-                val visibles = lista?.filter { (paquete, nombre) ->
-                    paquete !in yaTienen && (busqueda.isBlank() || nombre.contains(busqueda, ignoreCase = true))
-                }
-                if (visibles == null) {
-                    CircularProgressIndicator()
-                } else {
-                    LazyColumn(Modifier.heightIn(max = 400.dp)) {
-                        items(visibles, key = { it.first }) { (paquete, nombre) ->
-                            Text(
-                                nombre,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.fillMaxWidth().clickable { alElegir(paquete) }.padding(vertical = 12.dp),
-                            )
-                        }
-                    }
-                }
-            }
-        },
-        confirmButton = { TextButton(onClick = alCerrar) { Text("Cancelar") } },
-    )
-}
-
-/** Paquete y nombre de cada app con ícono en el cajón de apps, por nombre. */
-private fun appsInstaladas(contexto: Context): List<Pair<String, String>> {
-    val pm = contexto.packageManager
-    val conIcono = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
-    @Suppress("DEPRECATION")
-    return pm.queryIntentActivities(conIcono, 0)
-        .map { it.activityInfo.packageName to it.loadLabel(pm).toString() }
-        .filter { it.first != contexto.packageName }
-        .distinctBy { it.first }
-        .sortedBy { it.second.lowercase() }
-}
-
-private fun nombreDeApp(contexto: Context, paquete: String): String = try {
-    val pm = contexto.packageManager
-    @Suppress("DEPRECATION")
-    pm.getApplicationInfo(paquete, 0).loadLabel(pm).toString()
-} catch (_: PackageManager.NameNotFoundException) {
-    paquete
 }
