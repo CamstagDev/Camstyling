@@ -48,6 +48,17 @@ la versión nueva.
     app más o menos cuando toca. Las fotos se leen achicadas a la pantalla.
   - No pide permiso de archivos: solo puede leer la carpeta que elijas.
 
+- Módulo nuevo **Perfiles**:
+  - Perfiles por días y horas (trabajo, noche, fin de semana...) que
+    cambian el timbre (sonido, vibrar, silencio), el volumen de llamada y
+    de notificaciones, los tonos y la vibración de llamadas. Al terminar,
+    el teléfono vuelve a como estaba.
+  - Horas de silencio: pone "No molestar" y solo suenan las alarmas, las
+    llamadas de favoritos y las excepciones elegidas (personas, grupos,
+    palabras o apps enteras), que Camstyling toca como alarma.
+  - Sin gastar batería: una alarma inexacta por cada horario, que se
+    vuelve a armar al prender el teléfono. Pide "Acceso a No molestar".
+
 ## 0.1.0 (2026-10-29)
 
 - Primera versión: la base de la app. Pantalla de inicio con los módulos

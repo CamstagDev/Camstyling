@@ -50,6 +50,14 @@ object Permisos {
     fun puedeVerLlamadas(contexto: Context): Boolean =
         ContextCompat.checkSelfPermission(contexto, VER_LLAMADAS) == PackageManager.PERMISSION_GRANTED
 
+    /** "Acceso a No molestar": poner el modo silencio y las horas de silencio de los perfiles. */
+    fun puedeCambiarNoMolestar(contexto: Context): Boolean =
+        contexto.getSystemService(android.app.NotificationManager::class.java).isNotificationPolicyAccessGranted
+
+    fun abrirNoMolestar(contexto: Context) {
+        contexto.startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+    }
+
     /** "Contactos": leer y cambiar el tono de cada contacto. Es un solo diálogo para los dos. */
     val CONTACTOS = arrayOf(android.Manifest.permission.READ_CONTACTS, android.Manifest.permission.WRITE_CONTACTS)
 

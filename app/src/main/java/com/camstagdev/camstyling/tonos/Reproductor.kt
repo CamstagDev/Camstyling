@@ -23,10 +23,16 @@ object Reproductor {
         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
         .build()
 
-    fun tocar(contexto: Context, sonido: Uri) {
+    /** Como alarma: pasa "No molestar" (las excepciones de las horas de silencio) y suena con el volumen de alarma. */
+    private val ALARMA = AudioAttributes.Builder()
+        .setUsage(AudioAttributes.USAGE_ALARM)
+        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+        .build()
+
+    fun tocar(contexto: Context, sonido: Uri, comoAlarma: Boolean = false) {
         detener()
         val nuevo = RingtoneManager.getRingtone(contexto, sonido) ?: return
-        nuevo.audioAttributes = NOTIFICACION
+        nuevo.audioAttributes = if (comoAlarma) ALARMA else NOTIFICACION
         nuevo.play()
         sonando = nuevo
         hilo.postDelayed({ if (sonando === nuevo) detener() }, MAXIMO_MS)
