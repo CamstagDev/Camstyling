@@ -23,6 +23,16 @@ la versión nueva.
   y alarma), desde la lista del teléfono o desde cualquier archivo de audio,
   que se copia a la carpeta de tonos.
 
+- Módulo nuevo **Fondos**:
+  - Poner una imagen de fondo en inicio, en bloqueo o en las dos.
+  - Cambio automático con las imágenes de una carpeta, al azar o en orden,
+    cada 1, 3, 6 o 12 horas o cada día.
+  - Fondo de noche: otra carpeta (o una sola imagen) entre dos horas, por
+    ejemplo de 20:00 a 07:00.
+  - Sin gastar batería: nada corre todo el tiempo; Android despierta a la
+    app más o menos cuando toca. Las fotos se leen achicadas a la pantalla.
+  - No pide permiso de archivos: solo puede leer la carpeta que elijas.
+
 ## 0.1.0 (2026-10-29)
 
 - Primera versión: la base de la app. Pantalla de inicio con los módulos
