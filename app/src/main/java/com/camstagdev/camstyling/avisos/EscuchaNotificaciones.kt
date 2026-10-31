@@ -4,9 +4,11 @@ import android.app.Notification
 import android.app.NotificationManager
 import android.content.ComponentName
 import android.media.AudioManager
+import android.media.RingtoneManager
 import android.net.Uri
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import com.camstagdev.camstyling.perfiles.Perfiles
 import com.camstagdev.camstyling.tonos.DatosDeAviso
 import com.camstagdev.camstyling.tonos.ReglasDeSonido
 import com.camstagdev.camstyling.tonos.Reproductor
@@ -45,28 +47,48 @@ class EscuchaNotificaciones : NotificationListenerService() {
 
         val sonido = ReglasDeSonido(this).buscar(datos)
         val patron = Reglas(this).patronDeApp(aviso.packageName)
-        if (sonido == null && patron == null) return
+
+        // Horas de silencio (módulo Perfiles): "No molestar" calla todo y aquí solo pasan las excepciones.
+        val excepciones = Perfiles(this).excepcionesEnSilencio()
+        val esExcepcion = excepciones != null && excepciones.any { coincide(it, aviso.packageName, datos) }
+        if (excepciones != null && !esExcepcion) return
+        if (sonido == null && patron == null && !esExcepcion) return
 
         // Las actualizaciones silenciosas (el mismo aviso que cambia) avisan una sola vez.
         if (notificacion.flags and Notification.FLAG_ONLY_ALERT_ONCE != 0 && !yaAvisadas.add(aviso.key)) return
 
         // Lo que el sistema tampoco dejaría sonar: canal silencioso, "No molestar", modo silencio.
         if (ranking != null) {
-            if (!ranking.matchesInterruptionFilter()) return
+            if (!esExcepcion && !ranking.matchesInterruptionFilter()) return
             if (ranking.importance < NotificationManager.IMPORTANCE_DEFAULT) return
         }
         val modo = getSystemService(AudioManager::class.java).ringerMode
-        if (modo == AudioManager.RINGER_MODE_SILENT) return
+        if (modo == AudioManager.RINGER_MODE_SILENT && !esExcepcion) return
 
         val ahora = System.currentTimeMillis()
         if (ahora - (ultimaVez[aviso.packageName] ?: 0L) < SEPARACION_MS) return
         ultimaVez[aviso.packageName] = ahora
+
+        if (esExcepcion) {
+            // Suena como alarma para pasar "No molestar": con su regla o con el sonido de notificación del teléfono.
+            val tono = sonido?.let { Uri.parse(it.tono) }
+                ?: RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_NOTIFICATION)
+            if (tono != null) runCatching { Reproductor.tocar(this, tono, comoAlarma = true) }
+            if (patron != null) Vibrador.vibrar(this, patron, Vibrador.Uso.NOTIFICACION)
+            return
+        }
 
         // En modo vibración no suena, pero sí vibra.
         if (sonido != null && modo == AudioManager.RINGER_MODE_NORMAL) {
             runCatching { Reproductor.tocar(this, Uri.parse(sonido.tono)) }
         }
         if (patron != null) Vibrador.vibrar(this, patron, Vibrador.Uso.NOTIFICACION)
+    }
+
+    /** Una excepción es "app:paquete", el nombre de una persona o grupo, o una palabra del mensaje. */
+    private fun coincide(excepcion: String, paquete: String, datos: DatosDeAviso): Boolean = when {
+        excepcion.startsWith("app:") -> excepcion.removePrefix("app:") == paquete
+        else -> datos.chats.any { it.equals(excepcion, ignoreCase = true) } || excepcion.lowercase() in datos.texto.lowercase()
     }
 
     override fun onNotificationRemoved(aviso: StatusBarNotification) {

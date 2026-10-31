@@ -45,6 +45,14 @@ Android 10 o más nuevo. Pensada para teléfonos Motorola (Android casi puro).
 - Sin servicio prendido ni alarmas exactas: Android despierta a la app
   cuando toca, así que el cambio puede atrasarse un rato.
 
+### Perfiles
+
+- **Por horario**: timbre, volúmenes, tonos y vibración de llamadas
+  distintos según el día y la hora. Al terminar, todo vuelve a como
+  estaba.
+- **Horas de silencio**: "No molestar" con excepciones (personas, grupos,
+  palabras o apps) que sí suenan, más las llamadas de favoritos.
+
 Estado de cada uno: ver CHANGELOG.md.
 
 ## Permisos
@@ -60,6 +68,7 @@ archivos: solo lee la carpeta que el usuario elige.
 | Acceso a notificaciones | Ver qué notificación llegó y tocar el sonido o la vibración de su regla |
 | Teléfono | Saber cuándo suena una llamada para vibrar con su patrón (no lee números) |
 | Contactos | Ponerle un tono de llamada a cada contacto |
+| Acceso a No molestar | Perfiles: poner silencio y las horas de silencio |
 
 ## Comandos
 

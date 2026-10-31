@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.camstagdev.camstyling.fondos.PantallaFondos
+import com.camstagdev.camstyling.perfiles.PantallaPerfiles
 import com.camstagdev.camstyling.tonos.PantallaTonos
 import com.camstagdev.camstyling.ui.Modulo
 import com.camstagdev.camstyling.ui.PantallaInicio
@@ -40,6 +41,10 @@ class MainActivity : ComponentActivity() {
                     Modulo.FONDOS -> {
                         BackHandler { abierto = null }
                         PantallaFondos(alVolver = { abierto = null })
+                    }
+                    Modulo.PERFILES -> {
+                        BackHandler { abierto = null }
+                        PantallaPerfiles(vecesAlFrente = vecesAlFrente, alVolver = { abierto = null })
                     }
                 }
             }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MusicNote
+import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.Wallpaper
 import androidx.compose.material.icons.outlined.Vibration
 import androidx.compose.material3.Card
@@ -45,6 +46,11 @@ enum class Modulo(val titulo: String, val descripcion: String, val icono: ImageV
         "Fondos",
         "Fondo de inicio y de bloqueo: una imagen, o que cambie solo con las fotos de una carpeta, con otra de noche.",
         Icons.Outlined.Wallpaper,
+    ),
+    PERFILES(
+        "Perfiles",
+        "Tonos, vibración y volumen por horario (trabajo, noche, fin de semana) y horas de silencio con excepciones.",
+        Icons.Outlined.Schedule,
     ),
 }
 
