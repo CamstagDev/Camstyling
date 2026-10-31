@@ -17,6 +17,10 @@
     <!-- Saber cuándo suena una llamada, para vibrar con su patrón (se pide con un diálogo). -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <!-- Ponerle un tono de llamada a cada contacto (se pide con un diálogo). -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+
     <!-- Poner el fondo de pantalla. Android lo da solo, sin preguntar. -->
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
