@@ -28,6 +28,9 @@ la versión nueva.
   categorías y los chats se ofrecen a medida que llegan notificaciones. El
   sonido original se apaga una vez en los ajustes de esa app o categoría
   (la tarjeta abre esa pantalla) y avisa si sigue prendido.
+- Tonos: en "¿Cuándo suena tu tono?" se ven las cuatro opciones con el
+  teléfono acostado (van de a dos por renglón); antes "Una palabra"
+  quedaba cortada abajo.
 - Tonos: **tonos por contacto**. Un tono de llamada para cada contacto,
   guardado en el mismo contacto (lo toca la app de Teléfono). Pide el
   permiso "Contactos".

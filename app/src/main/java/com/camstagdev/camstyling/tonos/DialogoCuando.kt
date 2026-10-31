@@ -1,12 +1,16 @@
 package com.camstagdev.camstyling.tonos
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -18,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.camstagdev.camstyling.ui.Explicacion
@@ -47,10 +52,8 @@ fun DialogoCuando(
                 when (modo) {
                     null -> {
                         Explicacion("¿Cuándo suena tu tono?")
-                        Cuando.entries.reversed().forEach { opcion ->
-                            Fila(opcion.texto) {
-                                if (opcion == Cuando.APP) alElegir(Cuando.APP, "", "Toda la app") else modo = opcion
-                            }
+                        Opciones(Cuando.entries.reversed()) { opcion ->
+                            if (opcion == Cuando.APP) alElegir(Cuando.APP, "", "Toda la app") else modo = opcion
                         }
                     }
                     Cuando.CANAL -> {
@@ -92,12 +95,29 @@ fun DialogoCuando(
     )
 }
 
+/**
+ * Las opciones de cuándo suena, pegadas una debajo de otra. Con el teléfono
+ * acostado van de a dos por renglón para que quepan todas sin desplazar; si
+ * aun así no caben (letra muy grande), se desplazan dentro del diálogo.
+ */
 @Composable
-private fun Fila(texto: String, alTocar: () -> Unit) {
+private fun Opciones(opciones: List<Cuando>, alTocar: (Cuando) -> Unit) {
+    val acostado = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    Column(Modifier.verticalScroll(rememberScrollState())) {
+        opciones.chunked(if (acostado) 2 else 1).forEach { renglon ->
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                renglon.forEach { opcion -> Fila(opcion.texto, Modifier.weight(1f)) { alTocar(opcion) } }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Fila(texto: String, modifier: Modifier = Modifier, alTocar: () -> Unit) {
     Text(
         texto,
         style = MaterialTheme.typography.bodyLarge,
-        modifier = Modifier.fillMaxWidth().clickable(onClick = alTocar).padding(vertical = 12.dp),
+        modifier = modifier.fillMaxWidth().clickable(onClick = alTocar).padding(vertical = 12.dp),
     )
 }
 
@@ -116,8 +136,8 @@ fun DialogoFuente(titulo: String, alDelTelefono: () -> Unit, alDeArchivo: () -> 
         title = { Text(titulo) },
         text = {
             Column {
-                Fila("De la lista del teléfono", alDelTelefono)
-                Fila("Desde un archivo de audio", alDeArchivo)
+                Fila("De la lista del teléfono", alTocar = alDelTelefono)
+                Fila("Desde un archivo de audio", alTocar = alDeArchivo)
             }
         },
         confirmButton = {},
