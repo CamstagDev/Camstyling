@@ -6,6 +6,8 @@ la versión nueva.
 
 ## Sin publicar
 
+## 0.2.0 (2026-10-31)
+
 - Módulo nuevo **Vibración**:
   - 10 patrones predeterminados (toque corto, doble, triple, latido, largo,
     timbre clásico, ráfaga, ola, tic-tac y SOS), cada uno con su dibujo y
