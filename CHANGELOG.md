@@ -70,6 +70,15 @@ la versión nueva.
   - Linterna: tres destellos cuando llega algo elegido, si quieres solo con
     la pantalla apagada. No pide permiso de cámara.
 
+- Módulo nuevo **Adicionales** (cada cosa apagada de entrada):
+  - Animación al cargar: con el teléfono bloqueado, al conectar el
+    cargador sale una batería animada con el porcentaje por 5 segundos
+    ("Desconectado" al sacarlo). Nunca tapa lo que estás usando.
+  - Colores, íconos y letra: qué se puede cambiar sin root y atajos a esos
+    ajustes del teléfono.
+- **Respaldo** en la pantalla de inicio: guarda todos los ajustes en un
+  archivo y los restaura.
+
 ## 0.1.0 (2026-10-29)
 
 - Primera versión: la base de la app. Pantalla de inicio con los módulos

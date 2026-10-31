@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import com.camstagdev.camstyling.adicionales.PantallaAdicionales
 import com.camstagdev.camstyling.avisos.PantallaAvisos
 import com.camstagdev.camstyling.fondos.PantallaFondos
 import com.camstagdev.camstyling.perfiles.PantallaPerfiles
@@ -50,6 +51,10 @@ class MainActivity : ComponentActivity() {
                     Modulo.AVISOS -> {
                         BackHandler { abierto = null }
                         PantallaAvisos(vecesAlFrente = vecesAlFrente, alVolver = { abierto = null })
+                    }
+                    Modulo.ADICIONALES -> {
+                        BackHandler { abierto = null }
+                        PantallaAdicionales(vecesAlFrente = vecesAlFrente, alVolver = { abierto = null })
                     }
                 }
             }

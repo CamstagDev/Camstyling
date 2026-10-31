@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.PowerManager
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import com.camstagdev.camstyling.adicionales.Carga
 import com.camstagdev.camstyling.perfiles.Perfiles
 import com.camstagdev.camstyling.tonos.DatosDeAviso
 import com.camstagdev.camstyling.tonos.ReglasDeSonido
@@ -116,10 +117,12 @@ class EscuchaNotificaciones : NotificationListenerService() {
 
     override fun onListenerConnected() {
         activa = this
+        Carga.registrar(this)
     }
 
     override fun onDestroy() {
         activa = null
+        Carga.desregistrar(this)
         historial.close()
         trabajo.shutdown()
         super.onDestroy()
@@ -127,6 +130,7 @@ class EscuchaNotificaciones : NotificationListenerService() {
 
     override fun onListenerDisconnected() {
         activa = null
+        Carga.desregistrar(this)
         // Si el sistema la desconecta (p. ej. al actualizar la app), pedir que la vuelva a conectar.
         requestRebind(ComponentName(this, EscuchaNotificaciones::class.java))
     }
