@@ -85,5 +85,10 @@
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
+
+        <!-- Vuelve a avisar de una notificación elegida que sigue sin abrir (solo la app lo programa). -->
+        <receiver
+            android:name=".avisos.Recordatorio"
+            android:exported="false" />
     </application>
 </manifest>

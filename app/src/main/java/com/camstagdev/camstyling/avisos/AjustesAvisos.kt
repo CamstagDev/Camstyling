@@ -1,0 +1,73 @@
+package com.camstagdev.camstyling.avisos
+
+import android.content.Context
+import androidx.core.content.edit
+import com.camstagdev.camstyling.tonos.DatosDeAviso
+import org.json.JSONArray
+
+/** Días que se guarda el historial. */
+val DIAS_DE_HISTORIAL = listOf(1, 3, 7, 30)
+
+/** Cada cuántos minutos se repite un recordatorio. */
+val MINUTOS_DE_RECORDATORIO = listOf(5, 10, 15, 30)
+
+/**
+ * Los ajustes del módulo Avisos: historial, recordatorio y linterna. Los
+ * "elegidos" son las apps ("app:paquete"), personas, grupos o palabras a
+ * los que se aplica cada cosa.
+ */
+class AjustesAvisos(contexto: Context) {
+
+    private val prefs = contexto.applicationContext.getSharedPreferences("avisos", Context.MODE_PRIVATE)
+
+    var historial: Boolean
+        get() = prefs.getBoolean("historial", false)
+        set(valor) = prefs.edit { putBoolean("historial", valor) }
+
+    var diasDeHistorial: Int
+        get() = prefs.getInt("dias", 7).takeIf { it in DIAS_DE_HISTORIAL } ?: 7
+        set(valor) = prefs.edit { putInt("dias", valor) }
+
+    var recordatorio: Boolean
+        get() = prefs.getBoolean("recordatorio", false)
+        set(valor) = prefs.edit { putBoolean("recordatorio", valor) }
+
+    var minutosDeRecordatorio: Int
+        get() = prefs.getInt("minutos", 10).takeIf { it in MINUTOS_DE_RECORDATORIO } ?: 10
+        set(valor) = prefs.edit { putInt("minutos", valor) }
+
+    /** Cuántas veces se repite como máximo. */
+    var repeticiones: Int
+        get() = prefs.getInt("repeticiones", 3).coerceIn(1, 10)
+        set(valor) = prefs.edit { putInt("repeticiones", valor) }
+
+    var elegidosRecordatorio: List<String>
+        get() = lista("elegidos_recordatorio")
+        set(valor) = guardarLista("elegidos_recordatorio", valor)
+
+    var linterna: Boolean
+        get() = prefs.getBoolean("linterna", false)
+        set(valor) = prefs.edit { putBoolean("linterna", valor) }
+
+    /** La linterna solo parpadea con la pantalla apagada (boca abajo sobre la mesa, por ejemplo). */
+    var linternaSoloApagada: Boolean
+        get() = prefs.getBoolean("linterna_apagada", true)
+        set(valor) = prefs.edit { putBoolean("linterna_apagada", valor) }
+
+    var elegidosLinterna: List<String>
+        get() = lista("elegidos_linterna")
+        set(valor) = guardarLista("elegidos_linterna", valor)
+
+    private fun lista(clave: String): List<String> {
+        val json = JSONArray(prefs.getString(clave, "[]"))
+        return (0 until json.length()).map { json.getString(it) }
+    }
+
+    private fun guardarLista(clave: String, valor: List<String>) = prefs.edit { putString(clave, JSONArray(valor).toString()) }
+}
+
+/** Si la notificación es de algo elegido: "app:paquete", el nombre de una persona o grupo, o una palabra del mensaje. */
+fun DatosDeAviso.coincideCon(eleccion: String): Boolean = when {
+    eleccion.startsWith("app:") -> eleccion.removePrefix("app:") == paquete
+    else -> chats.any { it.equals(eleccion, ignoreCase = true) } || eleccion.lowercase() in texto.lowercase()
+}

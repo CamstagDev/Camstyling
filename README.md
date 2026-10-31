@@ -53,6 +53,13 @@ Android 10 o más nuevo. Pensada para teléfonos Motorola (Android casi puro).
 - **Horas de silencio**: "No molestar" con excepciones (personas, grupos,
   palabras o apps) que sí suenan, más las llamadas de favoritos.
 
+### Avisos
+
+- **Historial**: lo que llega queda guardado (solo en el teléfono), aunque
+  lo descartes o la app lo borre.
+- **Recordatorio**: lo importante vuelve a sonar mientras siga sin abrir.
+- **Linterna**: destellos al llegar algo de quien elijas.
+
 Estado de cada uno: ver CHANGELOG.md.
 
 ## Permisos
