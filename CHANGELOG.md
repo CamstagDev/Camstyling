@@ -6,6 +6,8 @@ la versión nueva.
 
 ## Sin publicar
 
+## 0.2.1 (2026-11-07)
+
 - Inicio más simple: cada módulo muestra solo su ícono y su título. La
   descripción ahora aparece arriba de la pantalla de cada módulo.
 
