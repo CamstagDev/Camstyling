@@ -48,6 +48,7 @@ import androidx.core.app.ActivityCompat
 import com.camstagdev.camstyling.sistema.Permisos
 import com.camstagdev.camstyling.tonos.TonosDelSistema
 import com.camstagdev.camstyling.ui.Explicacion
+import com.camstagdev.camstyling.ui.Modulo
 import com.camstagdev.camstyling.ui.SelectorDeApp
 import com.camstagdev.camstyling.ui.Tarjeta
 import com.camstagdev.camstyling.ui.TarjetaPermiso
@@ -141,6 +142,7 @@ fun PantallaVibracion(vecesAlFrente: Int, alVolver: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.padding(margen),
         ) {
+            item { Explicacion(Modulo.VIBRACION.descripcion) }
             item {
                 Tarjeta {
                     Text("Tu teléfono", style = MaterialTheme.typography.titleMedium)

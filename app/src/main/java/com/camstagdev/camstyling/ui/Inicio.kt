@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,7 +43,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** Cada herramienta de la app. Una nueva se agrega aquí y en MainActivity. */
+/**
+ * Cada herramienta de la app. Una nueva se agrega aquí y en MainActivity.
+ * En el inicio solo se ven el ícono y el título; la descripción va arriba de su pantalla.
+ */
 enum class Modulo(val titulo: String, val descripcion: String, val icono: ImageVector) {
     TONOS(
         "Tonos",
@@ -143,10 +145,7 @@ private fun TarjetaModulo(modulo: Modulo, alAbrir: (Modulo) -> Unit) {
         Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(modulo.icono, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(32.dp))
             Spacer(Modifier.width(16.dp))
-            Column {
-                Text(modulo.titulo, style = MaterialTheme.typography.titleMedium)
-                Text(modulo.descripcion, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
+            Text(modulo.titulo, style = MaterialTheme.typography.titleMedium)
         }
     }
 }

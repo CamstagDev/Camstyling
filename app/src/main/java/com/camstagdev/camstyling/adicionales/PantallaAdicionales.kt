@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationManagerCompat
 import com.camstagdev.camstyling.sistema.Permisos
 import com.camstagdev.camstyling.ui.Explicacion
+import com.camstagdev.camstyling.ui.Modulo
 import com.camstagdev.camstyling.ui.Tarjeta
 import com.camstagdev.camstyling.ui.TarjetaPermiso
 import com.camstagdev.camstyling.ui.Titulo
@@ -71,6 +72,7 @@ fun PantallaAdicionales(vecesAlFrente: Int, alVolver: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.padding(margen),
         ) {
+            item { Explicacion(Modulo.ADICIONALES.descripcion) }
             item {
                 Explicacion(
                     "Detalles que no hacen falta pero quedan lindos. Cada uno se prende aparte y gastan un poco " +

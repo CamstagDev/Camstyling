@@ -6,6 +6,9 @@ la versión nueva.
 
 ## Sin publicar
 
+- Inicio más simple: cada módulo muestra solo su ícono y su título. La
+  descripción ahora aparece arriba de la pantalla de cada módulo.
+
 ## 0.2.0 (2026-10-31)
 
 - Módulo nuevo **Vibración**:

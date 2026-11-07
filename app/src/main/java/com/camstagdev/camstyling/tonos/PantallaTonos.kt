@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import com.camstagdev.camstyling.sistema.Permisos
 import com.camstagdev.camstyling.ui.Explicacion
+import com.camstagdev.camstyling.ui.Modulo
 import com.camstagdev.camstyling.ui.SelectorDeApp
 import com.camstagdev.camstyling.ui.Tarjeta
 import com.camstagdev.camstyling.ui.TarjetaPermiso
@@ -198,6 +199,7 @@ fun PantallaTonos(vecesAlFrente: Int, alVolver: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.padding(margen),
         ) {
+            item { Explicacion(Modulo.TONOS.descripcion) }
             item { Titulo("Tonos del sistema") }
             item {
                 TarjetaPermiso(
