@@ -26,6 +26,15 @@ class AjustesAdicionales(contexto: Context) {
     var carga: Boolean
         get() = prefs.getBoolean("carga", false)
         set(valor) = prefs.edit { putBoolean("carga", valor) }
+
+    /** Avisar al llegar a [porcentajeLimite] mientras carga. */
+    var limite: Boolean
+        get() = prefs.getBoolean("limite", false)
+        set(valor) = prefs.edit { putBoolean("limite", valor) }
+
+    var porcentajeLimite: Int
+        get() = prefs.getInt("porcentaje_limite", 80).coerceIn(50, 100)
+        set(valor) = prefs.edit { putInt("porcentaje_limite", valor) }
 }
 
 /**
@@ -47,8 +56,14 @@ object Carga {
     val receptor = object : BroadcastReceiver() {
         override fun onReceive(contexto: Context, intento: Intent) {
             when (intento.action) {
-                Intent.ACTION_POWER_CONNECTED -> alCambiar(contexto, conectado = true)
-                Intent.ACTION_POWER_DISCONNECTED -> alCambiar(contexto, conectado = false)
+                Intent.ACTION_POWER_CONNECTED -> {
+                    alCambiar(contexto, conectado = true)
+                    LimiteDeCarga.empezar(contexto)
+                }
+                Intent.ACTION_POWER_DISCONNECTED -> {
+                    alCambiar(contexto, conectado = false)
+                    LimiteDeCarga.dejar(contexto)
+                }
             }
         }
     }
@@ -59,10 +74,12 @@ object Carga {
             addAction(Intent.ACTION_POWER_DISCONNECTED)
         }
         ContextCompat.registerReceiver(contexto, receptor, filtro, ContextCompat.RECEIVER_NOT_EXPORTED)
+        if (LimiteDeCarga.estaCargando(contexto)) LimiteDeCarga.empezar(contexto)
     }
 
     fun desregistrar(contexto: Context) {
         runCatching { contexto.unregisterReceiver(receptor) }
+        LimiteDeCarga.dejar(contexto)
     }
 
     fun nivel(contexto: Context): Int =

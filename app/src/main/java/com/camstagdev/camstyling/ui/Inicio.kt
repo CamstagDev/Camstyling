@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material.icons.outlined.NotificationsActive
 import androidx.compose.material.icons.outlined.Schedule
@@ -57,6 +58,11 @@ enum class Modulo(val titulo: String, val descripcion: String, val icono: ImageV
         "Vibración",
         "Patrones de vibración para llamadas y para cada app: los de siempre, los tuyos o al ritmo de un sonido.",
         Icons.Outlined.Vibration,
+    ),
+    LLAMADAS(
+        "Llamadas",
+        "Tono que empieza bajito y sube, y una voz que dice quién te llama (a todos, a algunos o solo en ciertos perfiles).",
+        Icons.Outlined.Call,
     ),
     FONDOS(
         "Fondos",

@@ -35,6 +35,12 @@ Android 10 o más nuevo. Pensada para teléfonos Motorola (Android casi puro).
   tocando el sistema; para que no se mezclen, se apaga "Vibrar en
   llamadas" en Ajustes de sonido.
 
+### Llamadas
+
+- **Tono que sube**: empieza bajito y llega a tu volumen de siempre.
+- **Decir quién llama**: con voz, sin internet; para todos, algunos
+  contactos o solo en ciertos perfiles.
+
 ### Fondos
 
 - **Una imagen**: de fondo en inicio, en bloqueo o en las dos.
@@ -84,7 +90,8 @@ archivos: solo lee la carpeta que el usuario elige.
 | Modificar ajustes del sistema | Cambiar el tono de llamada, de notificación y de alarma |
 | Acceso a notificaciones | Ver qué notificación llegó y tocar el sonido o la vibración de su regla |
 | Teléfono | Saber cuándo suena una llamada para vibrar con su patrón (no lee números) |
-| Contactos | Ponerle un tono de llamada a cada contacto |
+| Contactos | Ponerle un tono de llamada a cada contacto; decir el nombre de quien llama |
+| Registro de llamadas | Saber el número de quien llama (Android no lo da sin él) |
 | Acceso a No molestar | Perfiles: poner silencio y las horas de silencio |
 
 ## Comandos

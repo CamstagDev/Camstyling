@@ -17,7 +17,7 @@ import org.json.JSONObject
 object Respaldo {
 
     /** Los archivos de ajustes que van al respaldo. */
-    private val ARCHIVOS = listOf("vibracion", "sonidos", "fondos", "perfiles", "avisos", "adicionales")
+    private val ARCHIVOS = listOf("vibracion", "sonidos", "fondos", "perfiles", "avisos", "adicionales", "llamadas")
 
     fun guardar(contexto: Context, destino: Uri) {
         val archivos = JSONObject()

@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import com.camstagdev.camstyling.adicionales.PantallaAdicionales
 import com.camstagdev.camstyling.avisos.PantallaAvisos
 import com.camstagdev.camstyling.fondos.PantallaFondos
+import com.camstagdev.camstyling.llamadas.PantallaLlamadas
 import com.camstagdev.camstyling.perfiles.PantallaPerfiles
 import com.camstagdev.camstyling.tonos.PantallaTonos
 import com.camstagdev.camstyling.ui.Modulo
@@ -51,6 +52,10 @@ class MainActivity : ComponentActivity() {
                     Modulo.AVISOS -> {
                         BackHandler { abierto = null }
                         PantallaAvisos(vecesAlFrente = vecesAlFrente, alVolver = { abierto = null })
+                    }
+                    Modulo.LLAMADAS -> {
+                        BackHandler { abierto = null }
+                        PantallaLlamadas(vecesAlFrente = vecesAlFrente, alVolver = { abierto = null })
                     }
                     Modulo.ADICIONALES -> {
                         BackHandler { abierto = null }

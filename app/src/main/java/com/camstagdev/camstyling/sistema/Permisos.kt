@@ -50,6 +50,13 @@ object Permisos {
     fun puedeVerLlamadas(contexto: Context): Boolean =
         ContextCompat.checkSelfPermission(contexto, VER_LLAMADAS) == PackageManager.PERMISSION_GRANTED
 
+    /** "Registro de llamadas": Android solo da el número de quien llama con este permiso (para decir su nombre). */
+    val VER_NUMERO = arrayOf(android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.READ_CALL_LOG)
+
+    fun puedeVerNumero(contexto: Context): Boolean = VER_NUMERO.all {
+        ContextCompat.checkSelfPermission(contexto, it) == PackageManager.PERMISSION_GRANTED
+    }
+
     /** "Acceso a No molestar": poner el modo silencio y las horas de silencio de los perfiles. */
     fun puedeCambiarNoMolestar(contexto: Context): Boolean =
         contexto.getSystemService(android.app.NotificationManager::class.java).isNotificationPolicyAccessGranted

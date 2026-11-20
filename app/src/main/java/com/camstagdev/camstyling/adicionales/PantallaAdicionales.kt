@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +47,8 @@ fun PantallaAdicionales(vecesAlFrente: Int, alVolver: () -> Unit) {
     val ajustes = remember { AjustesAdicionales(contexto) }
     var cambios by remember { mutableIntStateOf(0) }
     val carga = remember(cambios) { ajustes.carga }
+    val limite = remember(cambios) { ajustes.limite }
+    val porcentaje = remember(cambios) { ajustes.porcentajeLimite }
     val escucha = remember(vecesAlFrente) { Permisos.puedeLeerNotificaciones(contexto) }
     val notificaciones = remember(vecesAlFrente, cambios) { NotificationManagerCompat.from(contexto).areNotificationsEnabled() }
     val pantallaCompleta = remember(vecesAlFrente) { Carga.pantallaCompleta(contexto) }
@@ -130,6 +133,33 @@ fun PantallaAdicionales(vecesAlFrente: Int, alVolver: () -> Unit) {
                                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
                             )
                         },
+                    )
+                }
+            }
+
+            item { Titulo("Límite de carga") }
+            item {
+                Tarjeta {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("Avisar al llegar a", Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
+                        Switch(
+                            checked = limite,
+                            onCheckedChange = {
+                                ajustes.limite = it
+                                cambios++
+                                if (it && LimiteDeCarga.estaCargando(contexto)) LimiteDeCarga.empezar(contexto) else LimiteDeCarga.dejar(contexto)
+                            },
+                        )
+                    }
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        listOf(80, 85, 90, 95).forEach { p ->
+                            FilterChip(selected = porcentaje == p, onClick = { ajustes.porcentajeLimite = p; cambios++ }, label = { Text("$p %") })
+                        }
+                    }
+                    Explicacion(
+                        "Cargar hasta el 100 % cada día gasta la batería más rápido. Al llegar al límite suena y " +
+                            "vibra una notificación para que desconectes. Solo mira el nivel mientras está cargando. " +
+                            "Necesita el \"Acceso a notificaciones\" y el permiso de notificaciones de arriba.",
                     )
                 }
             }

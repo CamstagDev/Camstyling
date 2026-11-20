@@ -17,6 +17,9 @@
     <!-- Saber cuándo suena una llamada, para vibrar con su patrón (se pide con un diálogo). -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <!-- Llamadas: Android solo da el número de quien llama con este permiso, para decir su nombre (diálogo). -->
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+
     <!-- Ponerle un tono de llamada a cada contacto (se pide con un diálogo). -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />

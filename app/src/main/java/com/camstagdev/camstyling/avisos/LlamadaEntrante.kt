@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.telephony.TelephonyManager
+import com.camstagdev.camstyling.llamadas.Timbre
 import com.camstagdev.camstyling.vibracion.Reglas
 import com.camstagdev.camstyling.vibracion.Vibrador
 
@@ -23,7 +24,7 @@ class LlamadaEntrante : BroadcastReceiver() {
     override fun onReceive(contexto: Context, intento: Intent) {
         // PHONE_STATE solo lo puede mandar el sistema: ninguna otra app puede hacerla vibrar.
         if (intento.action != TelephonyManager.ACTION_PHONE_STATE_CHANGED) return
-        val patron = Reglas(contexto).patronDeLlamada() ?: return
+        val patron = Reglas(contexto).patronDeLlamada()
 
         if (intento.getStringExtra(TelephonyManager.EXTRA_STATE) == TelephonyManager.EXTRA_STATE_RINGING) {
             val audio = contexto.getSystemService(AudioManager::class.java)
@@ -33,10 +34,14 @@ class LlamadaEntrante : BroadcastReceiver() {
             if (noMolestar == NotificationManager.INTERRUPTION_FILTER_NONE ||
                 noMolestar == NotificationManager.INTERRUPTION_FILTER_ALARMS
             ) return
-            Vibrador.vibrar(contexto, patron, Vibrador.Uso.LLAMADA)
+            if (patron != null) Vibrador.vibrar(contexto, patron, Vibrador.Uso.LLAMADA)
+            // Módulo Llamadas: tono que sube y voz que dice quién llama. El número solo llega con "Registro de llamadas".
+            @Suppress("DEPRECATION")
+            Timbre.alSonar(contexto, intento.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER))
         } else {
             // Contestaron (OFFHOOK) o colgaron (IDLE).
-            Vibrador.detener(contexto)
+            if (patron != null) Vibrador.detener(contexto)
+            Timbre.alTerminar(contexto)
         }
     }
 }
