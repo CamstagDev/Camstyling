@@ -6,6 +6,19 @@ la versión nueva.
 
 ## Sin publicar
 
+- Tonos: **recortar una canción**. Se elige el pedazo (hasta 40 s), con
+  entrada suave, se escucha y se guarda como tono de llamada o de
+  notificación (WAV en la carpeta de tonos).
+- Módulo nuevo **Llamadas**:
+  - Tono que sube: la llamada empieza bajito y sube hasta tu volumen en 5
+    a 30 segundos; al contestar o colgar vuelve a como estaba.
+  - Decir quién llama: voz del teléfono, sin internet, para todos, para
+    algunos contactos o solo durante ciertos perfiles. Pide "Registro de
+    llamadas" (Android solo da el número con él) y "Contactos".
+- Adicionales: **límite de carga**. Avisa con una notificación al llegar
+  al 80, 85, 90 o 95 % mientras carga; solo mira el nivel mientras está
+  conectado.
+
 ## 0.2.1 (2026-11-07)
 
 - Inicio más simple: cada módulo muestra solo su ícono y su título. La

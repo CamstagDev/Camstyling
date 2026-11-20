@@ -101,6 +101,10 @@ fun PantallaTonos(vecesAlFrente: Int, alVolver: () -> Unit) {
     var eligiendoFuente by remember { mutableStateOf(false) }
     var agregandoApp by remember { mutableStateOf(false) }
     var appNueva by remember { mutableStateOf<String?>(null) }
+    var recortando by remember { mutableStateOf<Uri?>(null) }
+    val elegirCancion = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { cancion: Uri? ->
+        recortando = cancion
+    }
 
     /** Pone el tono elegido donde corresponde. */
     fun aplicar(a: Destino, tono: Uri?) {
@@ -227,6 +231,14 @@ fun PantallaTonos(vecesAlFrente: Int, alVolver: () -> Unit) {
                 )
             }
 
+            item {
+                Tarjeta {
+                    Text("Recortar una canción", style = MaterialTheme.typography.titleMedium)
+                    Explicacion("Elige el pedazo que quieres (el coro, por ejemplo), con una entrada suave, y queda como tono.")
+                    OutlinedButton(onClick = { elegirCancion.launch(arrayOf("audio/*")) }) { Text("Elegir canción") }
+                }
+            }
+
             item { Titulo("Sonidos por app") }
             item {
                 TarjetaPermiso(
@@ -351,5 +363,9 @@ fun PantallaTonos(vecesAlFrente: Int, alVolver: () -> Unit) {
             alDeArchivo = { eligiendoFuente = false; abrirArchivo(elegido) },
             alCerrar = { eligiendoFuente = false },
         )
+    }
+
+    recortando?.let { cancion ->
+        DialogoRecorte(cancion, alListo = { recortando = null; cambios++ }, alCerrar = { recortando = null })
     }
 }
