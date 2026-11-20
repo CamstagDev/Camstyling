@@ -6,6 +6,8 @@ la versión nueva.
 
 ## Sin publicar
 
+## 0.3.0 (2026-11-20)
+
 - Tonos: **recortar una canción**. Se elige el pedazo (hasta 40 s), con
   entrada suave, se escucha y se guarda como tono de llamada o de
   notificación (WAV en la carpeta de tonos).
