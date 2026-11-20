@@ -159,7 +159,7 @@ fun PantallaAdicionales(vecesAlFrente: Int, alVolver: () -> Unit) {
                     Explicacion(
                         "Cargar hasta el 100 % cada día gasta la batería más rápido. Al llegar al límite suena y " +
                             "vibra una notificación para que desconectes. Solo mira el nivel mientras está cargando. " +
-                            "Necesita el "Acceso a notificaciones" y el permiso de notificaciones de arriba.",
+                            "Necesita el \"Acceso a notificaciones\" y el permiso de notificaciones de arriba.",
                     )
                 }
             }
