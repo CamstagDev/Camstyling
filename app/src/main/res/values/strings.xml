@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Camstyling</string>
+    <string name="widget_titulo">Perfil</string>
+    <string name="widget_descripcion">Muestra el perfil de ahora. Tócalo para pasar al siguiente.</string>
 </resources>

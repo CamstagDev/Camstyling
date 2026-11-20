@@ -58,6 +58,10 @@ Android 10 o más nuevo. Pensada para teléfonos Motorola (Android casi puro).
   estaba.
 - **Horas de silencio**: "No molestar" con excepciones (personas, grupos,
   palabras o apps) que sí suenan, más las llamadas de favoritos.
+- **Responder solo**: durante un perfil contesta una vez a cada chat
+  elegido (nunca a grupos).
+- **A mano**: desde la app, el mosaico de ajustes rápidos o el widget.
+- **Al conectar** audífonos o el auto: un perfil y el volumen de la música.
 
 ### Avisos
 
@@ -65,6 +69,7 @@ Android 10 o más nuevo. Pensada para teléfonos Motorola (Android casi puro).
   lo descartes o la app lo borre.
 - **Recordatorio**: lo importante vuelve a sonar mientras siga sin abrir.
 - **Linterna**: destellos al llegar algo de quien elijas.
+- **Posponer**: un chat o una app por 1 hora o hasta mañana.
 
 ### Adicionales
 
@@ -93,6 +98,7 @@ archivos: solo lee la carpeta que el usuario elige.
 | Contactos | Ponerle un tono de llamada a cada contacto; decir el nombre de quien llama |
 | Registro de llamadas | Saber el número de quien llama (Android no lo da sin él) |
 | Acceso a No molestar | Perfiles: poner silencio y las horas de silencio |
+| Dispositivos cercanos | Perfiles: ver los aparatos Bluetooth y saber cuándo se conectan |
 
 ## Comandos
 

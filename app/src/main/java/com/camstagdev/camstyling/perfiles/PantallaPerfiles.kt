@@ -1,6 +1,9 @@
 package com.camstagdev.camstyling.perfiles
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -11,6 +14,7 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +28,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -34,7 +39,7 @@ import com.camstagdev.camstyling.ui.Tarjeta
 import com.camstagdev.camstyling.ui.TarjetaPermiso
 import com.camstagdev.camstyling.ui.Titulo
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun PantallaPerfiles(vecesAlFrente: Int, alVolver: () -> Unit) {
     val contexto = LocalContext.current
@@ -46,6 +51,10 @@ fun PantallaPerfiles(vecesAlFrente: Int, alVolver: () -> Unit) {
     val noMolestar = remember(vecesAlFrente) { Permisos.puedeCambiarNoMolestar(contexto) }
     val notificaciones = remember(vecesAlFrente) { Permisos.puedeLeerNotificaciones(contexto) }
     var editando by remember { mutableStateOf<Perfil?>(null) }
+    val forzado = remember(cambios, vecesAlFrente) { perfiles.forzado }
+    val disparadores = remember { Disparadores(contexto) }
+    val listaDisparadores = remember(cambios) { disparadores.todos() }
+    var agregandoDisparador by remember { mutableStateOf(false) }
 
     fun cambiado() {
         perfiles.aplicar(forzar = true)
@@ -78,6 +87,26 @@ fun PantallaPerfiles(vecesAlFrente: Int, alVolver: () -> Unit) {
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.primary,
                     )
+                    if (forzado != null) {
+                        Explicacion("Elegido a mano (mosaico, widget o un aparato conectado): manda hasta que vuelvas al horario.")
+                        OutlinedButton(onClick = { perfiles.forzar(null); cambios++ }) { Text("Volver al horario") }
+                    }
+                    if (lista.isNotEmpty()) {
+                        Text("Elegir a mano", style = MaterialTheme.typography.bodyLarge)
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            lista.forEach { perfil ->
+                                FilterChip(
+                                    selected = forzado == perfil.id,
+                                    onClick = { perfiles.forzar(if (forzado == perfil.id) null else perfil.id); cambios++ },
+                                    label = { Text(perfil.nombre) },
+                                )
+                            }
+                        }
+                        Explicacion(
+                            "También desde el mosaico \"Perfil\" de los ajustes rápidos (edítalos y arrástralo) o " +
+                                "el widget \"Perfil\" de la pantalla de inicio: cada toque pasa al siguiente.",
+                        )
+                    }
                 }
             }
             item {
@@ -114,6 +143,33 @@ fun PantallaPerfiles(vecesAlFrente: Int, alVolver: () -> Unit) {
                         "una alarma por cada horario (sin nada corriendo en medio), así que puede tardar unos minutos.",
                 )
             }
+            item { Titulo("Al conectar") }
+            item {
+                Tarjeta {
+                    Explicacion(
+                        "Al conectar unos audífonos o el auto, pone un perfil (hasta que lo desconectes) y el " +
+                            "volumen de la música. No busca nada: Android avisa al conectar.",
+                    )
+                    if (listaDisparadores.isEmpty()) Explicacion("Todavía no hay ninguno.")
+                    listaDisparadores.forEach { d ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column(Modifier.weight(1f)) {
+                                Text(d.nombre, style = MaterialTheme.typography.bodyLarge)
+                                Text(
+                                    listOfNotNull(
+                                        d.perfil?.let { id -> lista.firstOrNull { it.id == id }?.nombre?.let { "perfil $it" } },
+                                        d.volumenMusica?.let { "música al $it %" },
+                                    ).joinToString(", ").ifEmpty { "No cambia nada" },
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                            }
+                            OutlinedButton(onClick = { disparadores.borrar(d.aparato); cambios++ }) { Text("Quitar") }
+                        }
+                    }
+                    FilledTonalButton(onClick = { agregandoDisparador = true }) { Text("Agregar") }
+                    if (!notificaciones) Explicacion("Necesita el \"Acceso a notificaciones\" (módulo Tonos) para enterarse de las conexiones.")
+                }
+            }
             if (!notificaciones) {
                 item {
                     Explicacion(
@@ -122,6 +178,14 @@ fun PantallaPerfiles(vecesAlFrente: Int, alVolver: () -> Unit) {
                 }
             }
         }
+    }
+
+    if (agregandoDisparador) {
+        EditorDisparador(
+            perfiles = lista,
+            alGuardar = { disparadores.guardar(it); agregandoDisparador = false; cambios++ },
+            alCerrar = { agregandoDisparador = false },
+        )
     }
 
     editando?.let { perfil ->

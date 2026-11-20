@@ -33,6 +33,9 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
+    <!-- Perfiles: cambiar de perfil al conectar unos audífonos Bluetooth (se pide con un diálogo). -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
     <!-- Poner el fondo de pantalla. Android lo da solo, sin preguntar. -->
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
@@ -107,5 +110,30 @@
             android:showWhenLocked="true"
             android:taskAffinity=""
             android:turnScreenOn="true" />
+
+        <!-- Mosaico de ajustes rápidos: cada toque pasa al siguiente perfil. -->
+        <service
+            android:name=".perfiles.MosaicoPerfil"
+            android:exported="true"
+            android:icon="@drawable/ic_perfil"
+            android:label="Perfil"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <!-- Widget de perfiles para la pantalla de inicio. -->
+        <receiver
+            android:name=".perfiles.WidgetPerfil"
+            android:exported="true"
+            android:label="Perfil">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_perfil" />
+        </receiver>
     </application>
 </manifest>

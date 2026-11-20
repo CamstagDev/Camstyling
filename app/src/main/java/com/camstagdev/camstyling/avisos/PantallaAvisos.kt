@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.camstagdev.camstyling.sistema.Permisos
+import com.camstagdev.camstyling.tonos.DatosDeAviso
 import com.camstagdev.camstyling.ui.Elegidos
 import com.camstagdev.camstyling.ui.Explicacion
 import com.camstagdev.camstyling.ui.Modulo
@@ -74,6 +75,17 @@ fun PantallaAvisos(vecesAlFrente: Int, alVolver: () -> Unit) {
     val conLinterna = remember(cambios) { ajustes.linterna }
     val soloApagada = remember(cambios) { ajustes.linternaSoloApagada }
     val elegidosLinterna = remember(cambios) { ajustes.elegidosLinterna }
+    val pospuestos = remember(cambios) { ajustes.pospuestos }
+    val enLaBarra = remember(cambios, vecesAlFrente) {
+        EscuchaNotificaciones.activa?.enLaBarra().orEmpty().map { it.key to DatosDeAviso.de(it) }
+    }
+
+    /** Pospone lo que ya está y lo que llegue de ese chat (o app) hasta [hasta]. */
+    fun posponer(eleccion: String, hasta: Long) {
+        ajustes.posponer(eleccion, hasta)
+        EscuchaNotificaciones.activa?.posponerQueCoincidan(eleccion, hasta)
+        cambios++
+    }
 
     Scaffold(
         topBar = {
@@ -132,6 +144,45 @@ fun PantallaAvisos(vecesAlFrente: Int, alVolver: () -> Unit) {
                 }
             }
 
+            item { Titulo("Posponer") }
+            item {
+                Tarjeta {
+                    Explicacion(
+                        "Aparta un chat o una app por un rato: lo que está en la barra y lo que llegue se esconde " +
+                            "y Android lo vuelve a mostrar a la hora elegida. \"Mañana\" es a las 8:00.",
+                    )
+                    if (enLaBarra.isEmpty()) {
+                        Explicacion(if (notificaciones) "No hay notificaciones en la barra." else "Hace falta el acceso a notificaciones.")
+                    }
+                    enLaBarra.forEach { (_, datos) ->
+                        val eleccion = datos.chats.firstOrNull() ?: "app:${datos.paquete}"
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(
+                                "${nombreDeApp(contexto, datos.paquete)} · ${datos.chats.firstOrNull() ?: ""}",
+                                Modifier.weight(1f),
+                                style = MaterialTheme.typography.bodyMedium,
+                                maxLines = 1,
+                            )
+                            OutlinedButton(onClick = { posponer(eleccion, enUnaHora()) }) { Text("1 h") }
+                            OutlinedButton(onClick = { posponer(eleccion, mananaTemprano()) }) { Text("Mañana") }
+                        }
+                    }
+                    if (pospuestos.isNotEmpty()) {
+                        Text("Pospuesto ahora", style = MaterialTheme.typography.bodyLarge)
+                        pospuestos.forEach { (eleccion, hasta) ->
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    "${textoDeEleccion(contexto, eleccion)} hasta ${DateUtils.formatDateTime(contexto, hasta, DateUtils.FORMAT_SHOW_TIME)}",
+                                    Modifier.weight(1f),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                                OutlinedButton(onClick = { ajustes.quitarPospuesto(eleccion); cambios++ }) { Text("Quitar") }
+                            }
+                        }
+                    }
+                }
+            }
+
             item { Titulo("Historial") }
             item {
                 Tarjeta {
@@ -168,11 +219,17 @@ fun PantallaAvisos(vecesAlFrente: Int, alVolver: () -> Unit) {
                     }
                     if (g.titulo.isNotBlank()) Text(g.titulo, style = MaterialTheme.typography.titleSmall)
                     if (g.texto.isNotBlank()) Text(g.texto, style = MaterialTheme.typography.bodyMedium)
+                    OutlinedButton(onClick = { posponer(g.titulo.takeIf { it.isNotBlank() } ?: "app:${g.paquete}", enUnaHora()) }) {
+                        Text("Posponer 1 h")
+                    }
                 }
             }
         }
     }
 }
+
+private fun textoDeEleccion(contexto: android.content.Context, eleccion: String): String =
+    if (eleccion.startsWith("app:")) nombreDeApp(contexto, eleccion.removePrefix("app:")) else eleccion
 
 @Composable
 private fun Interruptor(texto: String, prendido: Boolean, alCambiar: (Boolean) -> Unit) {

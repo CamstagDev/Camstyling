@@ -10,6 +10,7 @@ import android.os.PowerManager
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import com.camstagdev.camstyling.adicionales.Carga
+import com.camstagdev.camstyling.perfiles.Conexiones
 import com.camstagdev.camstyling.perfiles.Perfiles
 import com.camstagdev.camstyling.tonos.DatosDeAviso
 import com.camstagdev.camstyling.tonos.ReglasDeSonido
@@ -53,6 +54,16 @@ class EscuchaNotificaciones : NotificationListenerService() {
         val ajustes = AjustesAvisos(this)
         if (ajustes.historial) guardarEnHistorial(aviso, ajustes.diasDeHistorial)
 
+        // Lo pospuesto (1 hora, hasta mañana): se aparta y Android lo vuelve a mostrar a esa hora.
+        val ahora = System.currentTimeMillis()
+        ajustes.pospuestos.entries.firstOrNull { datos.coincideCon(it.key) }?.let { (_, hasta) ->
+            runCatching { snoozeNotification(aviso.key, hasta - ahora) }
+            return
+        }
+
+        // Respuesta automática del perfil (antes de las horas de silencio, que cortan aquí abajo).
+        RespuestaAutomatica.intentar(this, aviso, datos)
+
         val sonido = ReglasDeSonido(this).buscar(datos)
         val patron = Reglas(this).patronDeApp(aviso.packageName)
 
@@ -78,7 +89,6 @@ class EscuchaNotificaciones : NotificationListenerService() {
         val modo = getSystemService(AudioManager::class.java).ringerMode
         if (modo == AudioManager.RINGER_MODE_SILENT && !esExcepcion) return
 
-        val ahora = System.currentTimeMillis()
         if (ahora - (ultimaVez[aviso.packageName] ?: 0L) < SEPARACION_MS) return
         ultimaVez[aviso.packageName] = ahora
 
@@ -115,14 +125,30 @@ class EscuchaNotificaciones : NotificationListenerService() {
         Recordatorio.cancelar(this, aviso.key)
     }
 
+    /** Lo que está ahora en la barra y avisa (para posponerlo desde la app). */
+    fun enLaBarra(): List<StatusBarNotification> = runCatching { activeNotifications.toList() }.getOrDefault(emptyList())
+        .filter { it.packageName != packageName && !it.isOngoing && it.notification.flags and Notification.FLAG_GROUP_SUMMARY == 0 }
+
+    /** Aparta una notificación hasta [hasta] (milisegundos). */
+    fun posponer(clave: String, hasta: Long) {
+        runCatching { snoozeNotification(clave, hasta - System.currentTimeMillis()) }
+    }
+
+    /** Aparta lo que ya está en la barra y coincide con [eleccion]. */
+    fun posponerQueCoincidan(eleccion: String, hasta: Long) {
+        enLaBarra().filter { DatosDeAviso.de(it).coincideCon(eleccion) }.forEach { posponer(it.key, hasta) }
+    }
+
     override fun onListenerConnected() {
         activa = this
         Carga.registrar(this)
+        Conexiones.registrar(this)
     }
 
     override fun onDestroy() {
         activa = null
         Carga.desregistrar(this)
+        Conexiones.desregistrar(this)
         historial.close()
         trabajo.shutdown()
         super.onDestroy()
@@ -131,6 +157,7 @@ class EscuchaNotificaciones : NotificationListenerService() {
     override fun onListenerDisconnected() {
         activa = null
         Carga.desregistrar(this)
+        Conexiones.desregistrar(this)
         // Si el sistema la desconecta (p. ej. al actualizar la app), pedir que la vuelva a conectar.
         requestRebind(ComponentName(this, EscuchaNotificaciones::class.java))
     }

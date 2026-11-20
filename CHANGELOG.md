@@ -18,6 +18,18 @@ la versión nueva.
 - Adicionales: **límite de carga**. Avisa con una notificación al llegar
   al 80, 85, 90 o 95 % mientras carga; solo mira el nivel mientras está
   conectado.
+- Perfiles:
+  - **Responder solo**: durante un perfil ("Manejando", "Dormido") contesta
+    una vez a cada chat elegido con el botón "Responder" de la notificación.
+    Nunca a grupos.
+  - **Elegir a mano** un perfil, que manda hasta volver al horario. También
+    con el mosaico "Perfil" de los ajustes rápidos y el widget "Perfil" de
+    la pantalla de inicio (cada toque pasa al siguiente).
+  - **Al conectar** unos audífonos Bluetooth, el auto o audífonos con
+    cable: pone un perfil hasta desconectarlos y el volumen de la música.
+    Pide "Dispositivos cercanos" para ver los aparatos Bluetooth.
+- Avisos: **posponer** un chat o una app 1 hora o hasta mañana (8:00),
+  desde la barra o el historial. Android la vuelve a mostrar a esa hora.
 
 ## 0.2.1 (2026-11-07)
 
