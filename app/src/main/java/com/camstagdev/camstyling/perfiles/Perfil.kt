@@ -39,6 +39,9 @@ data class Perfil(
     val vibracionLlamada: String?,
     val silencio: Boolean,
     val excepciones: List<String>,
+    /** Respuesta automática a los chats (uno a uno, no grupos) de [responderA], una vez por chat mientras dura el perfil. */
+    val respuesta: String? = null,
+    val responderA: List<String> = emptyList(),
 ) {
 
     /** Si el perfil manda en ese momento. */
@@ -72,11 +75,13 @@ data class Perfil(
         .put("modo", modo?.name).put("volumenLlamada", volumenLlamada).put("volumenNotificaciones", volumenNotificaciones)
         .put("tonoLlamada", tonoLlamada).put("tonoNotificacion", tonoNotificacion).put("vibracionLlamada", vibracionLlamada)
         .put("silencio", silencio).put("excepciones", JSONArray(excepciones))
+        .put("respuesta", respuesta).put("responderA", JSONArray(responderA))
 
     companion object {
         fun deJson(json: JSONObject): Perfil {
             val dias = json.getJSONArray("dias")
             val excepciones = json.optJSONArray("excepciones") ?: JSONArray()
+            val responderA = json.optJSONArray("responderA") ?: JSONArray()
             return Perfil(
                 id = json.getString("id"),
                 nombre = json.getString("nombre"),
@@ -91,6 +96,8 @@ data class Perfil(
                 vibracionLlamada = json.textoONulo("vibracionLlamada"),
                 silencio = json.optBoolean("silencio", false),
                 excepciones = (0 until excepciones.length()).map { excepciones.getString(it) },
+                respuesta = json.textoONulo("respuesta"),
+                responderA = (0 until responderA.length()).map { responderA.getString(it) },
             )
         }
 

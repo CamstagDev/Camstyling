@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.content.edit
 import com.camstagdev.camstyling.tonos.DatosDeAviso
 import org.json.JSONArray
+import org.json.JSONObject
 
 /** Días que se guarda el historial. */
 val DIAS_DE_HISTORIAL = listOf(1, 3, 7, 30)
@@ -58,6 +59,27 @@ class AjustesAvisos(contexto: Context) {
         get() = lista("elegidos_linterna")
         set(valor) = guardarLista("elegidos_linterna", valor)
 
+    /**
+     * Lo pospuesto: cada elección ("app:paquete", una persona o grupo, o una
+     * palabra) con la hora (en milisegundos) hasta la que se aparta lo que
+     * llega de ella. Lo vencido se quita al leer.
+     */
+    var pospuestos: Map<String, Long>
+        get() {
+            val json = runCatching { JSONObject(prefs.getString("pospuestos", "{}")!!) }.getOrDefault(JSONObject())
+            val ahora = System.currentTimeMillis()
+            return json.keys().asSequence().associateWith { json.getLong(it) }.filterValues { it > ahora }
+        }
+        set(valor) = prefs.edit { putString("pospuestos", JSONObject(valor).toString()) }
+
+    fun posponer(eleccion: String, hasta: Long) {
+        pospuestos = pospuestos + (eleccion to hasta)
+    }
+
+    fun quitarPospuesto(eleccion: String) {
+        pospuestos = pospuestos - eleccion
+    }
+
     private fun lista(clave: String): List<String> {
         val json = JSONArray(prefs.getString(clave, "[]"))
         return (0 until json.length()).map { json.getString(it) }
@@ -65,6 +87,13 @@ class AjustesAvisos(contexto: Context) {
 
     private fun guardarLista(clave: String, valor: List<String>) = prefs.edit { putString(clave, JSONArray(valor).toString()) }
 }
+
+/** Dentro de una hora. */
+fun enUnaHora(): Long = System.currentTimeMillis() + 60 * 60 * 1000L
+
+/** Mañana a las 8:00. */
+fun mananaTemprano(): Long = java.time.LocalDate.now().plusDays(1).atTime(8, 0)
+    .atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli()
 
 /** Si la notificación es de algo elegido: "app:paquete", el nombre de una persona o grupo, o una palabra del mensaje. */
 fun DatosDeAviso.coincideCon(eleccion: String): Boolean = when {

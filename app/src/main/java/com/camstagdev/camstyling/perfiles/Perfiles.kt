@@ -49,7 +49,42 @@ class Perfiles(contexto: Context) {
 
     private fun escribir(lista: List<Perfil>) = prefs.edit { putString(PERFILES, JSONArray(lista.map { it.aJson() }).toString()) }
 
-    fun queManda(momento: LocalDateTime = LocalDateTime.now()): Perfil? = todos().firstOrNull { it.manda(momento) }
+    /**
+     * El perfil que manda: el elegido a mano (mosaico, widget o un aparato
+     * Bluetooth) si hay uno; si no, el del horario.
+     */
+    fun queManda(momento: LocalDateTime = LocalDateTime.now()): Perfil? {
+        val todos = todos()
+        return forzado?.let { id -> todos.firstOrNull { it.id == id } } ?: todos.firstOrNull { it.manda(momento) }
+    }
+
+    /** Un perfil elegido a mano, que manda hasta que se quite (null = según el horario). */
+    var forzado: String?
+        get() = prefs.getString(FORZADO, null)
+        set(valor) = prefs.edit { if (valor == null) remove(FORZADO) else putString(FORZADO, valor) }
+
+    /** Elige a mano un perfil (o vuelve al horario con null) y lo pone ya. */
+    fun forzar(id: String?) {
+        forzado = id
+        aplicar()
+    }
+
+    /** El siguiente del ciclo "según el horario" -> cada perfil -> "según el horario" (mosaico y widget). */
+    fun siguiente(): String? {
+        val ids = listOf<String?>(null) + todos().map { it.id }
+        return ids[(ids.indexOf(forzado).coerceAtLeast(0) + 1) % ids.size]
+    }
+
+    /**
+     * Anota que ya se respondió a ese chat durante este perfil. Devuelve
+     * false si ya estaba (así cada chat recibe una sola respuesta).
+     */
+    fun marcarRespondido(chat: String): Boolean {
+        val ya = prefs.getStringSet(RESPONDIDOS, emptySet()).orEmpty()
+        if (chat in ya) return false
+        prefs.edit { putStringSet(RESPONDIDOS, ya + chat) }
+        return true
+    }
 
     /** El perfil que se aplicó por última vez (puede ir unos minutos atrasado respecto al reloj). */
     val aplicado: Perfil? get() = prefs.getString(APLICADO, null)?.let { id -> todos().firstOrNull { it.id == id } }
@@ -68,9 +103,14 @@ class Perfiles(contexto: Context) {
         if (forzar || ahora?.id != antes) {
             if (antes == null && ahora != null) guardarNormal()
             runCatching { if (ahora != null) poner(ahora) else volverANormal() }
-            prefs.edit { if (ahora == null) remove(APLICADO) else putString(APLICADO, ahora.id) }
+            prefs.edit {
+                if (ahora == null) remove(APLICADO) else putString(APLICADO, ahora.id)
+                // Cada perfil nuevo empieza sin chats respondidos.
+                if (ahora?.id != antes) remove(RESPONDIDOS)
+            }
         }
         programar()
+        AtajosDePerfil.actualizar(app)
     }
 
     private val audio get() = app.getSystemService(AudioManager::class.java)
@@ -187,6 +227,8 @@ class Perfiles(contexto: Context) {
         const val PERFILES = "perfiles"
         const val APLICADO = "aplicado"
         const val NORMAL = "normal"
+        const val FORZADO = "forzado"
+        const val RESPONDIDOS = "respondidos"
     }
 }
 

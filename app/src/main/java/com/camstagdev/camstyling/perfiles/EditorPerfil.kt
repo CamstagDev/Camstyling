@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.camstagdev.camstyling.tonos.TonosDelSistema
+import com.camstagdev.camstyling.ui.Elegidos
 import com.camstagdev.camstyling.ui.Explicacion
 import com.camstagdev.camstyling.ui.SelectorDeApp
 import com.camstagdev.camstyling.ui.nombreDeApp
@@ -162,6 +163,20 @@ fun EditorPerfil(inicial: Perfil, alGuardar: (Perfil) -> Unit, alCerrar: () -> U
                         ) { Text("Agregar") }
                         OutlinedButton(onClick = { eligiendoApp = true }) { Text("Una app entera") }
                     }
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("Responder solo", Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
+                    Switch(checked = p.respuesta != null, onCheckedChange = { p = p.copy(respuesta = if (it) "Ahora no puedo, te escribo después." else null) })
+                }
+                if (p.respuesta != null) {
+                    Explicacion(
+                        "Mientras dura el perfil, contesta una vez a cada chat elegido con el botón \"Responder\" " +
+                            "de la notificación (WhatsApp, Telegram, Mensajes...). Nunca a grupos. Elige personas o " +
+                            "una app entera.",
+                    )
+                    OutlinedTextField(p.respuesta.orEmpty(), { p = p.copy(respuesta = it) }, label = { Text("Mensaje") })
+                    Elegidos(p.responderA) { p = p.copy(responderA = it) }
                 }
             }
         },
